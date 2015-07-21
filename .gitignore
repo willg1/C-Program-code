@@ -1,28 +1,355 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+//William Galloway CP22 11/26/14 continuation of the Rational class with Rational Array
+#include "Rational.h"
+#include <cstdlib>
+#include<iostream>
+using namespace std;
 
-# Precompiled Headers
-*.gch
-*.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
 
-# Fortran module files
-*.mod
+Rational::Rational() :num(0), denom(0)
+{}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+void Rational::getReduced() //Reduced fraction
+{
+	int total = 0, total1 = 0, total2 = 0, place = 0, x, y, z, e, subtotal;
 
-# Executables
-*.exe
-*.out
-*.app
+	int min = 0, max = 0, GCF = 0;
+	double holder = 0;
+	if (denom > num){
+		max = denom;
+		min = num;
+
+		for (int count = max - 1; count > 0; count--){
+			holder = max % count;
+			if (holder == 0){
+				GCF = count;
+				count = -1;
+			 }
+		   }
+			x = num;
+			y = GCF;
+			z = num / GCF;
+
+			e = GCF + 1;
+			if (z != 0){
+				for (int count = max - e; count > 0; count--){
+					holder = max % count;
+					if (holder == 0){
+						GCF = count;
+						count = -1;
+					}
+				 }
+				num = min;
+				denom = total;
+			  }
+
+			subtotal = max;
+				total = max / GCF;
+				total1 = min / GCF;
+				num = total1;
+				denom = total;
+				
+				if (total1 == 0){
+					total = 0;
+					total1 = 0;
+					total = min / min;
+					place =  min;
+					total1 = subtotal/place;
+					num = total;
+					denom = total1;
+				}
+			}
+			else
+			{
+				max = num;
+				min = denom;
+				for (int count = max - 1; count > 0; count--){
+					holder = max % count;
+					if (holder == 0){
+						GCF = count;
+						count = -1;
+					}
+					total = max / GCF;
+					total1 = min / GCF;
+					num = total;
+					denom = total1;
+				}
+			}
+}
+
+//Comment line
+
+Rational::Rational(int x, int y) //Constructor
+	:num(x), denom(y)
+{}
+
+Rational::~Rational() //Destructor
+{}
+
+int Rational::GetX() const //Getter
+{
+	return num;
+}
+
+int Rational::GetY() const
+{
+	return denom;
+}
+
+void Rational::SetX(const int x) //Setter
+{
+	num = x;
+}
+
+void Rational::SetY(const int y)
+{
+	denom = y;
+}
+
+Rational& Rational::operator=(const Rational& v) //Overloaded Operator
+{
+	if (this != &v)
+	{
+		num = v.GetX();
+		denom = v.GetY();
+	}
+	return *this;
+}
+
+bool Rational::operator==(const Rational& v) const //Overloaded Operator
+{
+	return ((num == v.GetY()) && (denom == v.GetY()));
+}
+
+bool Rational::operator!=(const Rational& v) const //Overloaded Operator
+{
+	return (!((*this) == v));
+}
+
+Rational& Rational::operator+=(const Rational& v) //Overloaded Operator
+{
+	num += v.GetX();
+	denom += v.GetY();
+	return (*this);
+}
+
+Rational& Rational::operator-=(const Rational& v) //Overloaded Operator
+{
+	num -= v.GetX();
+	denom -= v.GetY();
+	return (*this);
+}
+
+Rational Rational::operator+(const Rational& v) //Overloaded Operator
+{
+	num = (num*v.denom) + (v.num*denom);
+	denom *= v.GetY();
+	return (*this);
+}
+
+
+Rational Rational::operator-(const Rational& v) //Overloaded Operator
+{
+	num = (num*v.denom) - (v.num*denom);
+	denom *= v.GetY();
+	return (*this);
+}
+
+Rational Rational::operator*(const Rational& v) //Overloaded Operator
+{
+	num *= v.GetX();
+	denom *= v.GetY();
+	return (*this);
+}
+
+Rational Rational::operator/(const Rational& v) //Overloaded Operator
+{
+	num *= v.GetY();
+	denom *= v.GetX();
+	return (*this);
+}
+
+
+ostream& Rational::toStream(ostream& os) const
+{
+	os << "" << num << "/";
+	os << "" << denom << "\n";
+
+	return os;
+}
+
+istream& Rational::fromStream(istream& is)
+{
+	cout << "Enter Num: ";
+	is >> num;
+	cout << "Enter Denom: ";
+	is >> denom;
+
+	return is;
+}
+
+
+
+ostream& operator<<(ostream& os, const Rational& v) //Overloaded Operator
+{
+	return(v.toStream(os));
+}
+
+istream& operator>>(istream& is, Rational& v) //Overloaded Operator
+{
+	return (v.fromStream(is));
+}
+
+RationalArray::RationalArray(int s, int y) //RationalArray Constructor
+{
+	 arraySize = s;
+	 nptr = new int[s];
+	 dptr = new int[y];
+	 for (int count = 0; count < arraySize; count++){
+		 *(nptr + count) = 0;
+		 *(dptr + count) = 0;
+	 }
+	 cout << " constructor " << endl;
+}
+
+RationalArray::~RationalArray() //RationalArray Destructor
+{
+	if (arraySize > 0){
+		delete[] nptr;
+		delete[] dptr;
+	}
+	cout << "destructor ";
+}
+
+int &RationalArray::operator[](const int &sub)
+{
+	 if (sub < 0 || sub >= arraySize)
+		 subscriptError();
+	 return nptr[sub];
+	 return dptr[sub];
+}
+
+void RationalArray::subscriptError()
+{
+	 cout << "ERROR: Subscript out of range.\n";
+	 exit(0);
+}
+
+void RationalArray::setRationalArray(int x, int y, int set) //Set RationalArray values
+{
+	nptr[set] = x;
+	dptr[set] = y;
+}
+
+void RationalArray::Print()
+{
+	for (int count = 0; count < arraySize; count++){
+		cout << nptr[count] << "/" << dptr[count]  << "\n";
+		//cout << "Num: " << nptr[count] <<  " " << endl;
+		//cout << "Denom: " << dptr[count] << " " << endl;
+	}
+}
+
+
+RationalArray::RationalArray(const RationalArray &obj)
+{
+	 arraySize = obj.arraySize;
+	 nptr = new int[arraySize];
+	 dptr = new int[arraySize];
+	 for (int count = 0; count < arraySize; count++){
+		 *(nptr + count) = *(obj.nptr + count);
+		 *(dptr + count) = *(obj.dptr + count);
+	 }
+
+}
+
+ostream& operator<<(ostream& os, const RationalArray& list)
+{
+	return(list.toStream(os));
+}
+
+ostream& RationalArray::toStream(ostream& os) const
+{
+	os << "" << nptr[2] << "/" ;
+	os << ""  << dptr[2] << "\n";
+
+	return os;
+}
+
+void RationalArray::DisPrint(int x) // Print one array
+{
+	for (int count = 0; count < 1; count++)
+		cout << nptr[x] << "/" << dptr[x] << "\n";
+}
+
+int RationalArray::AddDenom() //Add Denominator
+{
+	int total =0;
+	for (int count = 0; count < arraySize; count++)
+		total += dptr[count];
+	return total;
+}
+
+bool RationalArray::operator < (const RationalArray &right) //Overloaded Operator
+{
+	bool status;
+	if (nptr < right.nptr)
+		status = true;
+	else if (nptr == right.nptr && dptr < right.dptr)
+		status = true;
+	else
+		status = false;
+	return status;
+}
+
+bool RationalArray::operator >(const RationalArray &right) //Overloaded Operator
+{
+	bool status;
+	if (nptr > right.nptr)
+		status = true;
+	else if (nptr == right.nptr && dptr > right.dptr)
+		status = true;
+	else
+		status = false;
+	return status;
+}
+
+void RationalArray::selectionSort(int size)  //Selection Sort
+{
+	int startScan, minIndex, minValue, dinIndex, dinValue;
+
+	for (startScan = 0; startScan < (size - 1); startScan++)
+	{
+		minIndex = startScan;
+		minValue = nptr[startScan];
+		dinIndex = startScan;
+		dinValue = dptr[startScan];
+		for (int index = startScan + 1; index < size; index++)
+		{
+			if (nptr[index] < minValue)
+			{
+				minValue = nptr[index];
+				minIndex = index;
+			}
+			if (dptr[index] < dinValue)
+			{
+				dinValue = dptr[index];
+				dinIndex = index;
+			}
+		}
+		nptr[minIndex] = nptr[startScan];
+		nptr[startScan] = minValue;
+		dptr[dinIndex] = dptr[startScan];
+		dptr[startScan] = dinValue;
+	}
+	
+}
+
+ void RationalArray::Show(int size)  //Print 
+ {
+	 for (int count = 0; count < size; count++){
+		 cout << nptr[count] << "/";
+		 cout << dptr[count] << " ";
+	 }
+	 cout << endl;
+ }
