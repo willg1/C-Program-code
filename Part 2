@@ -1,0 +1,84 @@
+//William Galloway CP22 11/26/14 continuation of the Rational class with Rational Array
+#ifndef Rational_H
+#define Rational_H
+
+#include<iostream>
+
+using std::cout;
+using std::cin;
+using std::ostream;
+using std::istream;
+
+class Rational
+{
+private:
+	int num;
+	int denom;
+
+public:           
+	Rational();    //Default Constructor
+	Rational(int x, int y); //Constructor accept Parameters
+	~Rational();   //Destructor
+
+	int GetX() const; //Getter
+	int GetY() const;
+
+	void SetX(const int x); //Setter
+	void SetY(const int y);
+
+	void getReduced(); //Reduced Fraction 
+
+	Rational& operator=(const Rational& v);   //Overloaded Operators
+	bool operator==(const Rational& v) const;
+	bool operator!=(const Rational& v) const;
+
+	Rational& operator+=(const Rational& v);
+	Rational& operator-=(const Rational& v);
+	
+	Rational operator+(const Rational& v);
+	Rational operator-(const Rational& v);
+	Rational operator*(const Rational& v);
+	Rational operator/(const Rational& v);
+
+	ostream& toStream(ostream& os) const;
+	istream& fromStream(istream& is);
+};
+
+class RationalArray  //Rational Array class
+{
+private:
+	int *nptr;      //Dynamic Memmory allocation
+	int *dptr;
+	int arraySize;
+	void subscriptError();
+public:
+	RationalArray(int, int);  //Constructor
+	~RationalArray();         //Array Destructor
+	void Print();
+	void DisPrint(int);
+	void setRationalArray(int, int, int);
+	RationalArray(const RationalArray &); // Copy constructor
+	int AddDenom();
+	void selectionSort(int);
+	void Show(int);
+	int size() const // Returns the array size
+	{
+		return arraySize;
+	}
+
+	friend ostream& operator<<(ostream& os, const Rational& v);
+	friend istream& operator>>(istream& is, Rational& v);
+	friend Rational operator+(const Rational& v);
+	bool operator > (const RationalArray &); // Overloaded >
+	bool operator < (const RationalArray &);
+
+	int &operator[](const int &); // Overloaded [] operator
+	ostream& toStream(ostream& os) const;
+	
+};
+
+ostream& operator<<(ostream& os, const Rational& v);
+istream& operator>>(istream& is, Rational& v);
+ostream& operator<<(ostream& os, const RationalArray& v);
+
+#endif
